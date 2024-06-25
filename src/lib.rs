@@ -16,7 +16,7 @@ pub struct Contract {
 impl Default for Contract {
     fn default() -> Self {
         Self {
-            requests: LookupMap::new(b"r".to_vec()),
+            requests: LookupMap::new(b"r_new".to_vec()),
         }
     }
 }

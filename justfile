@@ -14,4 +14,4 @@ clippy:
 
 deploy:
     echo "Deploying with PHRASE: ${PHRASE}"
-    cargo near deploy dependent-fifth.testnet without-init-call network-config testnet sign-with-seed-phrase "${PHRASE}" --seed-phrase-hd-path "m/44'/397'/0'" send
+    cargo near deploy near-faucet-sepolia.testnet without-init-call network-config testnet sign-with-seed-phrase "${PHRASE}" --seed-phrase-hd-path "m/44'/397'/0'" send

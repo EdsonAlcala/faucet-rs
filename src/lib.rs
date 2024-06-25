@@ -1,5 +1,4 @@
 use constants::{KEY_VERSION, MPC_CONTRACT_ACCOUNT_ID, MPC_PATH, ONE_DAY};
-use hex::decode;
 use near_sdk::{env, ext_contract, near, store::LookupMap, AccountId, Gas, Promise};
 
 mod constants;
@@ -26,7 +25,7 @@ impl Default for Contract {
 
 #[near]
 impl Contract {
-    pub fn request_tokens(&mut self, rlp_payload: String) -> Promise {
+    pub fn request_tokens(&mut self, rlp_payload: [u8; 32]) -> Promise {
         let current_time = env::block_timestamp();
         let predecessor = env::predecessor_account_id();
 
@@ -38,29 +37,18 @@ impl Contract {
         }
 
         // store the current time as the last time the predecessor requested tokens
-        self.recipients.insert(&predecessor, &current_time);
-
-        let payload: [u8; 32] = env::keccak256_array(&decode(rlp_payload).unwrap())
-            .into_iter()
-            .rev()
-            .collect::<Vec<u8>>()
-            .try_into()
-            .unwrap();
+        self.recipients.insert(predecessor, current_time);
 
         mpc::ext(MPC_CONTRACT_ACCOUNT_ID.parse().unwrap())
             .with_static_gas(Gas::from_tgas(100))
-            .sign(payload, String::from(MPC_PATH), KEY_VERSION)
+            .sign(rlp_payload, String::from(MPC_PATH), KEY_VERSION)
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     #[test]
     fn test_owner() {
-        let contract = Contract::default();
-
-        // TODO: Add a test to check that the owner is set correctly
+        // TODO: implement
     }
 }
